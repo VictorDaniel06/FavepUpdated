@@ -1,0 +1,61 @@
+<app-menu-cima></app-menu-cima>
+
+  <section class="contact-section section-padding">
+    <div class="container">
+        <div class="row">
+
+            <div class="col-lg-5 col-12 me-auto mb-lg-0 mb-5">
+                <h2 class="my-3">Ficamos felizes de ajudar!</h2>
+
+                <p>A FAVEP está pronta para atendê-lo. A FAVEP é um site profissional para o seu negócio.</p>
+
+                <div class="contact-info bg-white shadow-lg">
+                    <h3 class="mb-4">Informações para contato</h3>
+
+                    <h5 class="d-flex mt-3 mb-3">
+                        <i class="bi-geo-alt-fill custom-icon me-3"></i>
+                        Av. Dr. Flávio Henrique, Av. Dr. Flávio Henrique Lemos, 585 - Portal Itamaracá, Taquaritinga - SP, 15900-000
+                    </h5>
+
+                    <h5 class="d-flex mb-3">
+                        <i class="bi-telephone-fill custom-icon me-3"></i>
+
+                        <a href="tel: 110-220-9800">
+                          +55 (16) 3252-0000
+                        </a>
+                    </h5>
+
+                    <h5 class="d-flex">
+                        <i class="bi-envelope-fill custom-icon me-3"></i>
+                    </h5>
+                </div>
+            </div>
+
+            <div class="col-lg-6 col-12">
+                <form class="custom-form consulting-form bg-white shadow-lg mb-5 mb-lg-0" action="#" method="post" role="form">
+                    <div class="consulting-form-header d-flex align-items-center">
+                        <h2 class="mb-4 text">Digite sua mensagem</h2>
+                    </div>
+
+                    <form (submit)="sendEmail($event)" >
+                        <label for="nome-email">Seu nome:</label>
+                        <input type="text" id="nome-email" placeholder="Digite seu nome" required>
+
+                        <label for="email">Email:</label>
+                        <input type="text" id="email" placeholder="Digite seu email" required>
+                    
+                        <label for="mensagem-email">Escreva sua mensagem:</label>
+                        <textarea id="mensagem-email" rows="5" placeholder="Explique o que está acontecendo..." required></textarea>
+                    
+                        <button type="submit">Enviar </button>
+                      </form>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<app-footer></app-footer>
+  

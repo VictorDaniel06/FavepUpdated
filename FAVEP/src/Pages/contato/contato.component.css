@@ -1,0 +1,97 @@
+
+.contact-section {
+  background: var(--white-color);
+}
+
+.contact-form {
+  background: var(--section-bg-color);
+  border-radius: var(--border-radius-small);
+  padding: 40px;
+  
+}
+
+.contact-info {
+  background: var(--white-color);
+  border-radius: var(--border-radius-medium);
+  display: inline-block;
+  margin-top: 20px;
+  padding: 40px;
+  font-family: Ratio Modern;
+}
+
+.team-info a,
+.contact-info h5,
+.contact-info h5 a {
+  color: var(--p-color);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+}
+
+.team-info a:hover,
+.contact-info h5 a:hover {
+  color: var(--link-hover-color);
+}
+
+.row h2{
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+  font-size: 36px;
+  
+}
+
+.row p{
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 300;
+  font-size: 16px;
+  
+}
+.text{
+  font-size: 40px;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 300;
+}
+
+form {
+    background: #ffffff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    margin-top: 20px;
+  }
+
+  label {
+    display: block;
+    margin-top: 15px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+  }
+  
+  input, textarea {
+    width: 100%;
+    padding: 12px;
+    margin-top: 8px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+  }
+  
+  button {
+    margin-top: 20px;
+    background: #2980b9;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  button:hover {
+    background: #1c5985;
+  }
+
+  
+  
+  
