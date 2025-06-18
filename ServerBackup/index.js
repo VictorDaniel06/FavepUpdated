@@ -15,7 +15,7 @@ app.use('/production', productionsRoutes);
 app.use('/finance', financesRoutes);
 
 app.get('/', (req, res) => {
-  res.send('Servidor rodando com PostgreSQL!');
+  res.send('O Servidor está funcionando!');
 });
 
 const PORT = process.env.PORT || 5050;

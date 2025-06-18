@@ -4,9 +4,15 @@ const { PrismaClient } = require('@prisma/client');
 module.exports = {
   // # getAllProductions
   async getAllProductions(req, res) {
-    console.log('➡️ Requisição recebida para listar todas as produções');
+    const authenticatedUserId = req.userId;
+    console.log('➡️ Requisição recebida para listar todas as produções do usuário');
     try {
       const productions = await prisma.producao.findMany({
+        where: {
+          propriedade: {
+            usuarioId: authenticatedUserId, // FILTRA por produções de propriedades do usuário
+          }
+        },
         include: {
           propriedade: true,
         },
@@ -22,6 +28,7 @@ module.exports = {
   // # getProductionById
   async getProductionById(req, res) {
     const { id } = req.params;
+    const authenticatedUserId = req.userId;
     console.log(`➡️ Requisição recebida para buscar produção com ID: "${id}"`);
     try {
       const productionIdNum = parseInt(id, 10); 
@@ -38,11 +45,13 @@ module.exports = {
           propriedade: true,
         },
       });
-
-      if (!production) {
-        console.warn(`⚠️ Produção com ID "${id}" não encontrada.`);
+      
+      // VERIFICA A AUTORIZAÇÃO
+      if (!production || production.propriedade.usuarioId !== authenticatedUserId) {
+        console.warn(`⚠️ Produção com ID "${id}" não encontrada ou não pertence ao usuário.`);
         return res.status(404).json({ error: `Produção com ID "${id}" não encontrada.` });
       }
+
       console.log('✅ Produção encontrada com sucesso:', production.id);
       res.status(200).json(production);
     } catch (error) {
@@ -53,23 +62,34 @@ module.exports = {
 
   // # createProduction (Atualizado)
   async createProduction(req, res) {
-    // Adicionado 'quantidade' na desestruturação
     const { safra, areaproducao, data, nomepropriedade, cultura, quantidade } = req.body; 
+    const authenticatedUserId = req.userId;
     console.log('➡️ Requisição recebida para criar uma nova produção');
     console.log('📦 Dados recebidos:', req.body);
 
-    // Validação para incluir 'quantidade'
     if (!safra || areaproducao === undefined || !data || !nomepropriedade || !cultura || quantidade === undefined) {
       console.warn('⚠️ Campos obrigatórios para criar produção ausentes.');
       return res.status(400).json({ error: 'Por favor, preencha todos os campos obrigatórios: safra, areaproducao, quantidade, data, nomepropriedade e cultura.' });
     }
 
     try {
+      // VERIFICA se a propriedade informada pertence ao usuário
+      const property = await prisma.propriedade.findFirst({
+        where: {
+          nomepropriedade: nomepropriedade,
+          usuarioId: authenticatedUserId
+        }
+      });
+
+      if (!property) {
+        return res.status(403).json({ error: `A propriedade "${nomepropriedade}" não existe ou você não tem permissão para acessá-la.` });
+      }
+      
       const newProduction = await prisma.producao.create({
         data: {
           safra,
           areaproducao,
-          quantidade, // <-- Adicionado o campo quantidade
+          quantidade,
           data: new Date(data),
           cultura,
           propriedade: {
@@ -97,15 +117,24 @@ module.exports = {
   // # updateProduction (Atualizado)
   async updateProduction(req, res) {
     const { id } = req.params;
-    // Adicionado 'quantidade' na desestruturação
     const { safra, areaproducao, data, nomepropriedade, cultura, quantidade } = req.body;
+    const authenticatedUserId = req.userId;
     console.log(`➡️ Requisição recebida para atualizar produção com ID: "${id}"`);
-    console.log('📦 Dados de atualização:', req.body);
 
     try {
       const productionIdNum = parseInt(id, 10);
       if (isNaN(productionIdNum)) {
         return res.status(400).json({ error: 'ID de produção inválido.' });
+      }
+      
+      // VERIFICA A AUTORIZAÇÃO
+      const existingProduction = await prisma.producao.findUnique({
+        where: { id: productionIdNum },
+        include: { propriedade: true }
+      });
+
+      if (!existingProduction || existingProduction.propriedade.usuarioId !== authenticatedUserId) {
+        return res.status(404).json({ error: `Produção com ID "${id}" não encontrada.` });
       }
 
       const updatedProduction = await prisma.producao.update({
@@ -113,7 +142,7 @@ module.exports = {
         data: {
           safra,
           areaproducao,
-          quantidade, // <-- Adicionado o campo quantidade
+          quantidade,
           ...(data && { data: new Date(data) }),
           cultura,
           ...(nomepropriedade && { propriedade: { connect: { nomepropriedade: nomepropriedade } } }),
@@ -126,15 +155,9 @@ module.exports = {
         production: updatedProduction
       });
     } catch (error) {
-      // ... (o restante do tratamento de erro continua o mesmo) ...
        console.error('❌ Erro ao atualizar produção:', error);
       if (error.code === 'P2025') {
-        if (error.meta?.modelName === 'producao') {
-            return res.status(404).json({ error: `Não foi possível encontrar a produção com ID "${id}" para atualizar.` });
-        }
-        if (error.meta?.cause?.includes('No \'propriedade\' record(s)')) {
-            return res.status(400).json({ error: `A propriedade "${nomepropriedade}" não existe.` });
-        }
+        return res.status(404).json({ error: 'Não foi possível encontrar o recurso para atualizar.' });
       }
       res.status(500).json({ error: 'Ops! Ocorreu um erro ao atualizar a produção.' });
     }
@@ -143,12 +166,22 @@ module.exports = {
   // # deleteProduction
   async deleteProduction(req, res) {
     const { id } = req.params;
+    const authenticatedUserId = req.userId;
     console.log(`➡️ Requisição recebida para deletar produção com ID: "${id}"`);
     try {
       const productionIdNum = parseInt(id, 10);
       if (isNaN(productionIdNum)) {
-        console.warn(`⚠️ ID de produção inválido: "${id}".`);
         return res.status(400).json({ error: 'ID de produção inválido. Deve ser um número.' });
+      }
+      
+      // VERIFICA A AUTORIZAÇÃO
+      const existingProduction = await prisma.producao.findUnique({
+        where: { id: productionIdNum },
+        include: { propriedade: true }
+      });
+
+      if (!existingProduction || existingProduction.propriedade.usuarioId !== authenticatedUserId) {
+        return res.status(404).json({ error: `Produção com ID "${id}" não encontrada.` });
       }
 
       await prisma.producao.delete({
@@ -161,10 +194,9 @@ module.exports = {
     } catch (error) {
       console.error('❌ Erro ao deletar produção:', error);
       if (error.code === 'P2025') {
-        console.warn(`⚠️ Produção com ID "${id}" não encontrada para deleção.`);
         return res.status(404).json({ error: `Não foi possível encontrar a produção com ID "${id}" para deletar.` });
       }
-      res.status(500).json({ error: 'Ops! Ocorreu um erro ao deletar a produção. Verifique se não há registros associados.' });
+      res.status(500).json({ error: 'Ops! Ocorreu um erro ao deletar a produção.' });
     }
   },
 };
