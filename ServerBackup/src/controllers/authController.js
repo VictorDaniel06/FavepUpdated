@@ -11,9 +11,6 @@ module.exports = {
   // # register
   async register(req, res) {
     console.log('➡️ Requisição recebida em /register');
-
-    // --- CORREÇÃO APLICADA AQUI ---
-    // O campo 'confirmarSenha' agora também é protegido no log.
     console.log('📦 Dados recebidos (sem senha):', { ...req.body, senha: '[PROTEGIDA]', confirmarSenha: '[PROTEGIDA]' });
 
     const { nome, email, telefone, senha, confirmarSenha } = req.body;
@@ -30,6 +27,24 @@ module.exports = {
       return res.status(400).json({ error: 'As senhas não coincidem.' });
     }
 
+    // --- NOVA VERIFICAÇÃO DE SENHA FORTE ---
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>?]).{8,}$/;
+    if (senha.includes(' ') || senha.includes('/')) {
+        console.warn('⚠️ Senha contém caracteres inválidos (espaço ou /).');
+        return res.status(400).json({ error: 'A senha não pode conter espaços ou o caractere "/".' });
+    }
+    if (senha.length < 8) {
+        console.warn('⚠️ Senha muito curta.');
+        return res.status(400).json({ error: 'A senha deve ter no mínimo 8 caracteres.' });
+    }
+    if (!passwordRegex.test(senha)) {
+        console.warn('⚠️ A senha não atende aos critérios de segurança.');
+        return res.status(400).json({ 
+            error: 'A senha deve conter no mínimo: 1 letra maiúscula, 1 letra minúscula, 1 número e 1 caractere especial (!@#$%).' 
+        });
+    }
+    // --- FIM DA VERIFICAÇÃO ---
+
     try {
       const existingUser = await prisma.usuario.findUnique({ where: { email } });
 
@@ -38,9 +53,8 @@ module.exports = {
         return res.status(400).json({ error: 'Usuário já existe com este email.' });
       }
     
-      // Removido log de senha em texto plano por segurança.
       const hashedPassword = await bcrypt.hash(senha, 10);
-      console.log('🔒 Senha criptografada com sucesso.'); // Log seguro
+      console.log('🔒 Senha criptografada com sucesso.');
 
       const user = await prisma.usuario.create({
         data: {
@@ -52,7 +66,6 @@ module.exports = {
       });
 
       user.senha = undefined;
-
       console.log('✅ Usuário registrado com sucesso:', user.id);
 
       return res.status(201).json({
@@ -67,6 +80,7 @@ module.exports = {
 
   // # login
   async login(req, res) {
+    // ... (nenhuma alteração na função de login)
     console.log('➡️ Requisição recebida em /login');
     console.log('📦 Email recebido para login:', req.body.email);
 
@@ -85,7 +99,6 @@ module.exports = {
         return res.status(400).json({ error: 'Usuário não encontrado.' });
       }
       
-      // Removido log de senhas por segurança
       const isMatch = await bcrypt.compare(senha, user.senha);
       
       console.log('Resultado da comparação de senhas (bcrypt.compare):', isMatch);
@@ -115,9 +128,6 @@ module.exports = {
 
     console.log('➡️ Requisição recebida em /update');
     console.log('🆔 ID do usuário autenticado (via token):', authenticatedUserId);
-
-    // --- CORREÇÃO APLICADA AQUI ---
-    // O campo 'confirmarSenha' agora também é protegido no log.
     console.log('📦 Dados recebidos para atualização (sem senha):', { ...req.body, senha: '[PROTEGIDA]', confirmarSenha: '[PROTEGIDA]' });
     
     const { nome, email, telefone, senha, confirmarSenha } = req.body;
@@ -139,10 +149,27 @@ module.exports = {
           console.warn('⚠️ As senhas não coincidem durante a atualização.');
           return res.status(400).json({ error: 'As senhas não coincidem.' });
         }
+        
+        // --- NOVA VERIFICAÇÃO DE SENHA FORTE (reaplicada aqui) ---
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>?]).{8,}$/;
+        if (senha.includes(' ') || senha.includes('/')) {
+            console.warn('⚠️ Senha contém caracteres inválidos (espaço ou /).');
+            return res.status(400).json({ error: 'A senha não pode conter espaços ou o caractere "/".' });
+        }
+        if (senha.length < 8) {
+            console.warn('⚠️ Senha muito curta.');
+            return res.status(400).json({ error: 'A senha deve ter no mínimo 8 caracteres.' });
+        }
+        if (!passwordRegex.test(senha)) {
+            console.warn('⚠️ A senha não atende aos critérios de segurança.');
+            return res.status(400).json({ 
+                error: 'A senha deve conter no mínimo: 1 letra maiúscula, 1 letra minúscula, 1 número e 1 caractere especial (!@#$%).' 
+            });
+        }
+        // --- FIM DA VERIFICAÇÃO ---
 
-        // Removido log de senha em texto plano por segurança.
         const hashedPassword = await bcrypt.hash(senha, 10);
-        console.log('🔒 Nova senha criptografada com sucesso.'); // Log seguro
+        console.log('🔒 Nova senha criptografada com sucesso.');
 
         updateData.senha = hashedPassword;
         console.log('🔐 Senha atualizada para o usuário:', authenticatedUserId);
@@ -154,7 +181,6 @@ module.exports = {
       });
 
       user.senha = undefined;
-
       console.log('✅ Usuário atualizado com sucesso:', user.id);
 
       const newToken = generateToken({ id: user.id });
@@ -177,6 +203,7 @@ module.exports = {
 
   // # delete
   async delete(req, res) {
+    // ... (nenhuma alteração na função de delete)
     const authenticatedUserId = req.userId;
 
     console.log('➡️ Requisição recebida em /delete');

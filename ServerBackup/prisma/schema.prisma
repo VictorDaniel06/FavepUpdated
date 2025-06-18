@@ -11,7 +11,8 @@ model usuario {
   id           String        @id @default(uuid())
   nome         String
   email        String        @unique
-  telefone     String?
+  telefone     String        @unique
+  fotoperfil   String?
   senha        String
   propriedades propriedade[]
 }
@@ -35,7 +36,7 @@ model producao {
   nomepropriedade String
   cultura         String
   id              Int         @id @default(autoincrement())
-  quantidade      Float
+  produtividade      Float
   propriedade     propriedade @relation(fields: [nomepropriedade], references: [nomepropriedade])
 
   @@map("producao")
