@@ -1,40 +1,39 @@
-==============================================================================
+=================================
 [ 🎯 VISÃO GERAL DO PROJETO 🎯 ]
-==============================================================================
-
-O FAVEP é uma aplicação web 🌐 full-stack para gerenciamento agrícola. 🌾
-A plataforma permite aos usuários:
+=================================
+O FAVEP e uma aplicacao web 🌐 full-stack para gerenciamento agronomico. 🌾
+A plataforma permite aos usuarios:
 
   -> Gerenciar suas propriedades. 🏡
-  -> Controlar produções e finanças. 💰
-  -> Visualizar estatísticas detalhadas para auxiliar na tomada de decisões. 📊
+  -> Controlar producoes e financas. 💰
+  -> Visualizar estatisticas detalhadas para auxiliar na tomada de decisoes. 📊
 
   - Frontend: Angular 🅰️
   - Backend:  Node.js, Express, Prisma ⚙️
   - Banco de Dados: SQLite 💾
 
 
-==============================================================================
+=====================================
 [ 🚀 FUNCIONALIDADES PRINCIPAIS 🚀 ]
-==============================================================================
+=====================================
 
-  ✅ Autenticação de Usuários:   Sistema de registro e login seguro. 🔑
-  ✅ Gerenciamento de Propriedades: Cadastro, edição e visualização. 🏡
-  ✅ Controle de Produção:      Registro de safras, culturas e produtividade. 🌱
-  ✅ Gestão Financeira:         Acompanhamento de receitas e despesas. 💵
-  ✅ Visualização de Dados:     Gráficos, estatísticas e relatórios. 📈
-  ✅ Interação com Parceiros:   Seção para exibir parceiros estratégicos. 🤝
+  (*) Autenticacao de Usuarios: Sistema de registro e login seguro. 🔑
+  (*) Gerenciamento de Propriedades: Cadastro, edicao e visualizacao. 🏡
+  (*) Controle de Producao: Registro de safras, culturas e produtividade. 🌱
+  (*) Gestao Financeira: Acompanhamento de receitas e despesas. 💵
+  (*) Visualizacao de Dados: Graficos, estatisticas e relatorios. 📈
+  (*) Interacao com Parceiros: Secao para exibir parceiros estrategicos. 🤝
 
 
-==============================================================================
+=================================
 [ 🛠️ TECNOLOGIAS UTILIZADAS 🛠️ ]
-==============================================================================
+=================================
 
   --- FRONTEND (FAVEP/) --- 🎨
     - Framework:      Angular
     - Linguagem:      TypeScript
-    - Estilização:    CSS
-    - Gráficos:       Chart.js
+    - Estilizacao:    CSS
+    - Graficos:       Chart.js
     - Componentes:    Angular Material
 
   --- BACKEND (ServerBackup/) --- ⚙️
@@ -42,63 +41,39 @@ A plataforma permite aos usuários:
     - Linguagem:      JavaScript (Node.js)
     - ORM:            Prisma
     - Banco de Dados: SQLite
-    - Autenticação:   JWT com bcrypt
+    - Autenticacao:   JWT com bcrypt
 
 
-==============================================================================
+=================================
 [ 🖥️ COMANDOS PARA EXECUÇÃO 🖥️ ]
-==============================================================================
+=================================
 
-  --- FRONTEND (Aplicação Angular) --- 🅰️
-  Navegue até o diretório 'FAVEP/'
+  --- FRONTEND (Aplicacao Angular) --- 🅰️
 
-  1. Instalar dependências:
-     +-------------------+
-     |    npm install    |
-     +-------------------+
+  Navegue ate o diretorio 'FAVEP/'
 
-  2. Iniciar o servidor de desenvolvimento: 🚀
-     +-------------------+
-     |     ng serve      |
-     +-------------------+
-     --> A aplicação estará disponível em http://localhost:4200/
+  1. Instalar dependencias:
+     npm install
 
-  3. Build para produção:
-     +-------------------+
-     |     ng build      |
-     +-------------------+
+  2. Iniciar o servidor de desenvolvimento:
+     ng serve
+     (A aplicacao estara disponivel em http://localhost:4200/)
 
 
   --- BACKEND (Servidor Node.js) --- ⚙️
-  Navegue até o diretório 'ServerBackup/'
 
-  1. Instalar dependências:
-     +-------------------+
-     |    npm install    |
-     +-------------------+
+  Navegue ate o diretorio 'ServerBackup/'
 
-  2. Gerar o prisma:
-     +----------------------------+
-     |    npx nodemon index.js    |
-     +----------------------------+
+  1. Instalar dependencias:
+     npm install
 
-  3. Verificar a conexão com o banco:
-     +--------------------------+
-     |    npx prisma db pull    |
-     +--------------------------+
+  2. Garantir que o Prisma esta pronto:
+     npx prisma generate
 
-  4. Iniciar o servidor de maneira simples: 🚀
-     +---------------------+
-     |     node index.js   |
-     +---------------------+
+  3. Rodar em modo de desenvolvimento (recomendado):
+     npx nodemon index.js
+     (O servidor estara em execucao em http://localhost:5050)
 
-		Ou
-
-     Rodar em ambiente de desenvolvimento (Recomendado): 🚀
-     +---------------------------+
-     |    npx nodemon index.js   |
-     +---------------------------+
-     --> O servidor estará em execução em http://localhost:5050
-
-
-******************************************************************************
+  4. Rodar em modo de producao:
+     node index.js
+      (O servidor estara em execucao em http://localhost:5050)
