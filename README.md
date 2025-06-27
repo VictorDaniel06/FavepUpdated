@@ -41,7 +41,6 @@ Tecnologias principais:
   - Framework:      Angular
   - Linguagem:      TypeScript
   - Estilização:    CSS
-  - Gráficos:       Chart.js
   - Componentes:    Angular Material
 
 --- BACKEND (ServerBackup/) --- ⚙️
